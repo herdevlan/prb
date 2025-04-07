@@ -178,4 +178,4 @@ Las contribuciones son bienvenidas. Si deseas contribuir al proyecto, por favor 
 
 ## Licencia
 
-Este proyecto está licenciado bajo la [MIT License](LICENSE).
+Este proyecto está licenciado bajo la [Licencia Pública General GNU v3.0](https://www.gnu.org/licenses/gpl-3.0.html).
