@@ -1,181 +1,129 @@
-# Gestor de Tareas
+# 📋 Gestor de Tareas
 
-## Descripción
+## 1. Funcionalidades Principales
 
-**Gestor de Tareas** es una aplicación backend diseñada para gestionar las tareas de los usuarios de forma eficiente y segura. Los usuarios pueden registrarse, iniciar sesión y administrar sus tareas (crear, leer, actualizar y eliminar) a través de una API RESTful. El sistema está implementado en Node.js y utiliza PostgreSQL como base de datos para el almacenamiento persistente de los datos.
+### 1.1. Autenticación de Usuarios
 
-## Características
+- Registro de usuario con nombre, email y contraseña.
+- Inicio de sesión con email y contraseña.
+- Protección de rutas privadas mediante JWT.
+- Contraseñas hasheadas con **bcrypt.js**.
 
-- **Registro y Login de Usuarios**: Los usuarios pueden registrarse y autenticarse mediante un sistema basado en JWT.
-- **Gestión de Tareas**: Los usuarios pueden crear, listar, buscar, actualizar y eliminar tareas.
-- **Autenticación con JWT**: El sistema asegura que solo los usuarios autenticados puedan acceder y gestionar sus tareas.
+### 1.2. Gestión de Tareas (CRUD)
 
-## Tecnologías Utilizadas
+- Crear una tarea con:
+  - **Título** (obligatorio).
+  - **Descripción** (opcional).
+  - **Estado**: pendiente, en progreso, completada.
+    - Una tarea nueva inicia como “pendiente”.
+  - **Fecha límite** (opcional).
 
-- **Node.js**: Framework de JavaScript para construir la API RESTful.
-- **Express**: Framework web para Node.js que facilita la creación de la API.
-- **PostgreSQL**: Sistema de gestión de bases de datos relacional para almacenar los datos.
-- **Sequelize**: ORM que facilita la interacción con la base de datos y asegura la protección contra inyecciones SQL.
-- **JWT (JSON Web Tokens)**: Utilizado para la autenticación de usuarios y la protección de rutas.
-- **bcrypt.js**: Para la encriptación de contraseñas de los usuarios.
+- Editar tarea:
+  - Modificar título, descripción, estado, fecha límite.
+  - **Restricciones**:
+    - Solo se puede pasar de “pendiente” a “en progreso” o “completada”.
+    - De “en progreso” se puede pasar a “completada”.
+  
+- Eliminar tarea.
+- Ver lista de tareas filtrada por:
+  - **Estado** (pendiente, en progreso, completada).
+  - **Fecha límite**.
+  - **Búsqueda** por palabras clave.
 
-## Endpoints de la API
+### 1.3. Perfil de Usuario
 
-### 1. Autenticación
+- El usuario puede editar su:
+  - **Nombre**.
+  - **Email**.
+  - **Contraseña**.
 
-#### Registrar usuario
-- **Método**: `POST`
-- **URL**: `/api/auth/register`
-- **Cuerpo (JSON)**:
-    ```json
-    {
-        "nombre": "Juan",
-        "email": "juan@mail.com",
-        "password": "123456"
-    }
-    ```
-- **Descripción**: Permite registrar un nuevo usuario.
+## 2. Frontend
 
-#### Login de usuario
-- **Método**: `POST`
-- **URL**: `/api/auth/login`
-- **Cuerpo (JSON)**:
-    ```json
-    {
-        "email": "juan@mail.com",
-        "password": "123456"
-    }
-    ```
-- **Descripción**: Permite iniciar sesión con un usuario registrado. Devuelve un token JWT para autenticar futuras solicitudes.
+El proyecto frontend está estructurado de la siguiente manera:
 
-#### Obtener usuario autenticado
-- **Método**: `GET`
-- **URL**: `/api/auth/me`
-- **Headers**:
-    ```
-    Authorization: Bearer <tu_token_jwt>
-    ```
-- **Descripción**: Obtiene la información del usuario autenticado.
+### 2.1. Componentes
 
-### 2. Gestión de Tareas
+- **TaskCard.jsx**: Componente individual de tarea (card).
+- **TaskGrid.jsx**: Muestra todas las tareas en formato de bloques.
+- **TaskModal.jsx**: Componente para crear y editar tareas (modal).
+- **TaskFilters.jsx**: Barra de filtros por estado, fecha y búsqueda.
 
-#### Crear tarea
-- **Método**: `POST`
-- **URL**: `/api/tasks`
-- **Headers**:
-    ```
-    Authorization: Bearer <tu_token_jwt>
-    ```
-- **Cuerpo (JSON)**:
-    ```json
-    {
-        "titulo": "Organizar reunión de equipo",
-        "descripcion": "Planificar la reunión de equipo para discutir el avance del proyecto.",
-        "fechaLimite": "2025-04-15"
-    }
-    ```
-- **Descripción**: Permite crear una nueva tarea.
+### 2.2. Páginas
 
-#### Listar todas las tareas
-- **Método**: `GET`
-- **URL**: `/api/tasks`
-- **Headers**:
-    ```
-    Authorization: Bearer <tu_token_jwt>
-    ```
-- **Descripción**: Lista todas las tareas asociadas al usuario autenticado.
+- **Dashboard.jsx**: Página principal del dashboard, donde se gestionan las tareas.
+- **Login.jsx**: Página para el inicio de sesión.
+- **Register.jsx**: Página para el registro de nuevos usuarios.
 
-#### Buscar tareas por estado o palabra clave
-- **Método**: `GET`
-- **URL**: `/api/tasks?status=pendiente`
-- **Headers**:
-    ```
-    Authorization: Bearer <tu_token_jwt>
-    ```
-- **Descripción**: Filtra las tareas por estado (por ejemplo, "pendiente").
+### 2.3. Servicios
 
-- **Método**: `GET`
-- **URL**: `/api/tasks?search=reunión`
-- **Headers**:
-    ```
-    Authorization: Bearer <tu_token_jwt>
-    ```
-- **Descripción**: Filtra las tareas por palabra clave en el título o descripción.
+- **axios.js**: Instancia de Axios para realizar peticiones al backend.
 
-#### Filtrar tareas por fechas
-- **Método**: `GET`
-- **URL**: `/api/tasks?startDate=2025-04-01&endDate=2025-04-30`
-- **Headers**:
-    ```
-    Authorization: Bearer <tu_token_jwt>
-    ```
-- **Descripción**: Filtra las tareas dentro de un rango de fechas.
+## 3. Backend y Base de Datos
 
-#### Obtener una tarea específica
-- **Método**: `GET`
-- **URL**: `/api/tasks/1`
-- **Headers**:
-    ```
-    Authorization: Bearer <tu_token_jwt>
-    ```
-- **Descripción**: Obtiene los detalles de una tarea específica.
+El backend está desarrollado en **Node.js** con **PostgreSQL** y **Sequelize**. Incluye los siguientes endpoints principales:
 
-#### Actualizar tarea
-- **Método**: `PUT`
-- **URL**: `/api/tasks/1`
-- **Headers**:
-    ```
-    Authorization: Bearer <tu_token_jwt>
-    ```
-- **Cuerpo (JSON)**:
-    ```json
-    {
-        "titulo": "Organizar reunión de equipo para planificar el proyecto",
-        "estado": "en progreso"
-    }
-    ```
-- **Descripción**: Permite actualizar los detalles de una tarea existente.
+### 3.1. Endpoints para Autenticación
 
-#### Eliminar tarea
-- **Método**: `DELETE`
-- **URL**: `/api/tasks/1`
-- **Headers**:
-    ```
-    Authorization: Bearer <tu_token_jwt>
-    ```
-- **Descripción**: Elimina una tarea si está marcada como completada.
+- **POST /api/auth/register**: Registra un nuevo usuario.
+- **POST /api/auth/login**: Inicia sesión y devuelve un token JWT.
 
-## Configuración y Uso
+### 3.2. Endpoints para Tareas
 
-1. **Instalar dependencias**: Para instalar todas las dependencias del proyecto, ejecutar el siguiente comando en la raíz del proyecto:
-    ```bash
-    npm install
-    ```
+- **GET /api/tareas**: Obtiene todas las tareas del usuario autenticado.
+- **POST /api/tareas**: Crea una nueva tarea.
+- **PUT /api/tareas/:id**: Edita una tarea existente.
+- **DELETE /api/tareas/:id**: Elimina una tarea.
+- **GET /api/tareas/filters**: Obtiene tareas filtradas por estado, fecha o búsqueda.
 
-2. **Configuración de la base de datos**: Asegúrate de tener PostgreSQL instalado y crea una base de datos para este proyecto. Luego, configura los parámetros de conexión en el archivo de configuración de Sequelize.
+### 3.3. Endpoints para Perfil de Usuario
 
-3. **Migraciones**: Ejecuta las migraciones de Sequelize para crear las tablas necesarias en la base de datos:
-    ```bash
-    npx sequelize-cli db:migrate
-    ```
+- **GET /api/user/profile**: Obtiene el perfil del usuario autenticado.
+- **PUT /api/user/profile**: Actualiza el perfil del usuario.
 
-4. **Ejecutar el servidor**: Inicia el servidor localmente con:
-    ```bash
-    npm start
-    ```
+### 3.4. Seguridad
 
-   El servidor escuchará en el puerto **4000**.
+- Uso de **JWT** para la autenticación.
+- **bcrypt.js** para encriptar las contraseñas.
 
-## Contribuciones
+## 4. Detalles de Implementación
 
-Las contribuciones son bienvenidas. Si deseas contribuir al proyecto, por favor sigue estos pasos:
+### 4.1. Frontend
 
-1. Haz un fork del repositorio.
-2. Crea una nueva rama para tu característica (`git checkout -b feature/mi-nueva-caracteristica`).
-3. Realiza tus cambios y realiza un commit (`git commit -am 'Añadir nueva característica'`).
-4. Empuja tu rama (`git push origin feature/mi-nueva-caracteristica`).
-5. Crea un Pull Request.
+- **React** y **Bootstrap** para el desarrollo del frontend.
+- Uso de **Axios** para interactuar con el backend.
+- **React Router** para la navegación entre páginas.
+- Estado global manejado por **useState** y **useEffect**.
+- Funcionalidad de filtro, búsqueda y edición de tareas implementada con modales y formularios dinámicos.
 
-## Licencia
+### 4.2. Backend
 
-Este proyecto está licenciado bajo la [Licencia Pública General GNU v3.0](https://www.gnu.org/licenses/gpl-3.0.html).
+- **Node.js** con **Express** para la API RESTful.
+- **PostgreSQL** como base de datos.
+- **Sequelize** para la gestión de la base de datos y los modelos.
+
+## 5. Pruebas
+
+### 5.1. Test con Postman
+
+1. **Autenticación**:
+   - Test de registro con una solicitud **POST** a `/api/auth/register` enviando un objeto con `nombre`, `email`, y `contraseña`.
+   - Test de login con una solicitud **POST** a `/api/auth/login` enviando `email` y `contraseña`.
+
+2. **Tareas**:
+   - Test de creación de tarea con una solicitud **POST** a `/api/tareas` enviando el cuerpo de la tarea con título, descripción y fecha límite.
+   - Test de edición de tarea con una solicitud **PUT** a `/api/tareas/:id` enviando los cambios en la tarea.
+   - Test de eliminación de tarea con una solicitud **DELETE** a `/api/tareas/:id`.
+
+3. **Perfil**:
+   - Test de obtención del perfil con una solicitud **GET** a `/api/user/profile`.
+   - Test de edición del perfil con una solicitud **PUT** a `/api/user/profile`.
+
+## 6. Despliegue
+
+- **Backend en Render**: El backend se despliega en Render conectando el repositorio de GitHub. .
+
+- **Frontend en Vercel**: El frontend se despliega en Vercel conectando también el repositorio de GitHub.
+
+Ambos servicios manejan todo el proceso de despliegue de manera automática, lo que simplifica la gestión del entorno de producción.
+
+
